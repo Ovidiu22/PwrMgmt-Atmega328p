@@ -17,9 +17,10 @@ int main(void)
 	
 	while(1)
 	{
-		LED_DDR |= (1<<LED_pin);	// Turn LED on
+		LED_port |= (1<<LED_pin);	// Turn LED on
 		_delay_ms(1000);			// Wait 1 sec
-		LED_DDR &= ~(1<<LED_pin);	// Turn LED off
+		LED_port &= ~(1<<LED_pin);	// Turn LED off
+		_delay_ms(1000);			// Wait 1 sec
 	}
 	
 	PwrMngmnt_main();
