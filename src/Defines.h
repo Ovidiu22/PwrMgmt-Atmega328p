@@ -9,6 +9,10 @@
 #ifndef DEFINES_H_
 #define DEFINES_H_
 
+	#ifndef F_CPU
+	#define F_CPU 16000000ul
+	#endif
+	
 	#define LED_port		PORTD
 	#define LED_DDR			DDRD
 	#define LED_pin			PORTD7
