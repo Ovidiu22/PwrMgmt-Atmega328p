@@ -3,31 +3,31 @@ PwrMgmt-Atmega328p.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000002  00800100  00000170  000001e4  2**0
+  0 .data         00000002  00800100  0000016e  000001e2  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000170  00000000  00000000  00000074  2**1
+  1 .text         0000016e  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  000001e6  2**0
+  2 .comment      00000030  00000000  00000000  000001e4  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000218  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000214  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000058  00000000  00000000  00000258  2**0
+  4 .debug_aranges 00000058  00000000  00000000  00000254  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000867  00000000  00000000  000002b0  2**0
+  5 .debug_info   00000867  00000000  00000000  000002ac  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 0000075c  00000000  00000000  00000b17  2**0
+  6 .debug_abbrev 0000075c  00000000  00000000  00000b13  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000769  00000000  00000000  00001273  2**0
+  7 .debug_line   00000763  00000000  00000000  0000126f  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  0000008c  00000000  00000000  000019dc  2**2
+  8 .debug_frame  0000008c  00000000  00000000  000019d4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000079b7  00000000  00000000  00001a68  2**0
+  9 .debug_str    000079b7  00000000  00000000  00001a60  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000d9  00000000  00000000  0000941f  2**0
+ 10 .debug_loc    000000d9  00000000  00000000  00009417  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000038  00000000  00000000  000094f8  2**0
+ 11 .debug_ranges 00000038  00000000  00000000  000094f0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_macro  00002ba7  00000000  00000000  00009530  2**0
+ 12 .debug_macro  00002ba7  00000000  00000000  00009528  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -98,7 +98,7 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e0 e7       	ldi	r30, 0x70	; 112
+  7a:	ee e6       	ldi	r30, 0x6E	; 110
   7c:	f1 e0       	ldi	r31, 0x01	; 1
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
@@ -107,7 +107,7 @@ Disassembly of section .text:
   86:	b1 07       	cpc	r27, r17
   88:	d9 f7       	brne	.-10     	; 0x80 <__do_copy_data+0xc>
   8a:	2c d0       	rcall	.+88     	; 0xe4 <main>
-  8c:	6f c0       	rjmp	.+222    	; 0x16c <_exit>
+  8c:	6e c0       	rjmp	.+220    	; 0x16a <_exit>
 
 0000008e <__bad_interrupt>:
   8e:	b8 cf       	rjmp	.-144    	; 0x0 <__vectors>
@@ -215,9 +215,9 @@ void PwrMngmnt_main(void)
 
 000000e4 <main>:
   e4:	57 9a       	sbi	0x0a, 7	; 10
-
 int main(void)
 {
+	/* Set LED pin as output */
 	LED_DDR |= 1<<LED_pin;
 	
 	while( f_wdt == 1)
@@ -244,7 +244,7 @@ int main(void)
  100:	e1 f7       	brne	.-8      	; 0xfa <main+0x16>
  102:	00 c0       	rjmp	.+0      	; 0x104 <main+0x20>
  104:	00 00       	nop
-		_delay_ms(3000);			// Wait 1 sec
+		_delay_ms(3000);			// Wait 3 sec
 		LED_port &= ~(1<<LED_pin);	// Turn LED off
  106:	5f 98       	cbi	0x0b, 7	; 11
  108:	2f ef       	ldi	r18, 0xFF	; 255
@@ -256,7 +256,7 @@ int main(void)
  114:	e1 f7       	brne	.-8      	; 0x10e <main+0x2a>
  116:	00 c0       	rjmp	.+0      	; 0x118 <main+0x34>
  118:	00 00       	nop
-		_delay_ms(3000);			// Wait 3 sec to stabilize current -> reference for sleep modes
+		_delay_ms(3000);			// Wait 3 sec to stabilize current -> reference for sleep modes measurements
 	
 		/* Clear the watchdog flag */
 		f_wdt = 0;
@@ -266,9 +266,9 @@ int main(void)
 		/* Power management */
 		PwrMngmnt_main();
  122:	dd df       	rcall	.-70     	; 0xde <PwrMngmnt_main>
-
 int main(void)
 {
+	/* Set LED pin as output */
 	LED_DDR |= 1<<LED_pin;
 	
 	while( f_wdt == 1)
@@ -300,31 +300,29 @@ ISR(WDT_vect)
  13e:	11 24       	eor	r1, r1
  140:	8f 93       	push	r24
  142:	9f 93       	push	r25
-	LED_port |= (1<<LED_pin);
- 144:	5f 9a       	sbi	0x0b, 7	; 11
 	if(f_wdt == 0)
- 146:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__data_start>
- 14a:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__data_start+0x1>
- 14e:	89 2b       	or	r24, r25
- 150:	31 f4       	brne	.+12     	; 0x15e <__vector_6+0x28>
+ 144:	80 91 00 01 	lds	r24, 0x0100	; 0x800100 <__data_start>
+ 148:	90 91 01 01 	lds	r25, 0x0101	; 0x800101 <__data_start+0x1>
+ 14c:	89 2b       	or	r24, r25
+ 14e:	31 f4       	brne	.+12     	; 0x15c <__vector_6+0x26>
 	{
 		f_wdt = 1;
- 152:	81 e0       	ldi	r24, 0x01	; 1
- 154:	90 e0       	ldi	r25, 0x00	; 0
- 156:	90 93 01 01 	sts	0x0101, r25	; 0x800101 <__data_start+0x1>
- 15a:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__data_start>
+ 150:	81 e0       	ldi	r24, 0x01	; 1
+ 152:	90 e0       	ldi	r25, 0x00	; 0
+ 154:	90 93 01 01 	sts	0x0101, r25	; 0x800101 <__data_start+0x1>
+ 158:	80 93 00 01 	sts	0x0100, r24	; 0x800100 <__data_start>
 	}
 
- 15e:	9f 91       	pop	r25
- 160:	8f 91       	pop	r24
- 162:	0f 90       	pop	r0
- 164:	0f be       	out	0x3f, r0	; 63
- 166:	0f 90       	pop	r0
- 168:	1f 90       	pop	r1
- 16a:	18 95       	reti
+ 15c:	9f 91       	pop	r25
+ 15e:	8f 91       	pop	r24
+ 160:	0f 90       	pop	r0
+ 162:	0f be       	out	0x3f, r0	; 63
+ 164:	0f 90       	pop	r0
+ 166:	1f 90       	pop	r1
+ 168:	18 95       	reti
 
-0000016c <_exit>:
- 16c:	f8 94       	cli
+0000016a <_exit>:
+ 16a:	f8 94       	cli
 
-0000016e <__stop_program>:
- 16e:	ff cf       	rjmp	.-2      	; 0x16e <__stop_program>
+0000016c <__stop_program>:
+ 16c:	ff cf       	rjmp	.-2      	; 0x16c <__stop_program>
